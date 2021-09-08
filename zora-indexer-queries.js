@@ -21,6 +21,9 @@ const infoQuery = server.query(
       value
       transactionHash
       blockTimestamp
+      transaction {
+        from
+      }
     }
     AuctionCreatedEvent(where:{
       tokenContract:{_in: $contracts}
@@ -33,6 +36,9 @@ const infoQuery = server.query(
       auction {
         reservePrice
       }
+      transaction {
+        from
+      }
     }
     AuctionReservePriceUpdatedEvent(where:{
       tokenContract:{_in:$contracts}
@@ -44,6 +50,9 @@ const infoQuery = server.query(
       blockTimestamp
       auction {
         reservePrice
+      }
+      transaction {
+        from
       }
     }
   }
@@ -81,7 +90,7 @@ export function getUpdateStrings(incrementalUpdates) {
       text: `🤑  ${formatEther(bidEvent.value)} Ξ bid on ${
         collection.tokenName
       }${bidEvent.tokenId} placed by ${
-        bidEvent.address
+        bidEvent.transaction.from
       }  🔗 ${collection.urlTemplate.replace("{id}", bidEvent.tokenId)}`,
     };
   });
@@ -94,7 +103,7 @@ export function getUpdateStrings(incrementalUpdates) {
           collection.name
         } with a reserve of ${formatEther(
           createdEvent.auction.reservePrice
-        )} Ξ by ${createdEvent.address}  🔗 ${collection.urlTemplate.replace(
+        )} Ξ by ${createdEvent.transaction.from}  🔗 ${collection.urlTemplate.replace(
           "{id}",
           createdEvent.tokenId
         )}`,
@@ -110,7 +119,7 @@ export function getUpdateStrings(incrementalUpdates) {
           collection.tokenName
         }${updatedEvent.tokenId} reserve price updated to ${formatEther(
           updatedEvent.auction.reservePrice
-        )} Ξ by ${updatedEvent.address}  🔗 ${collection.urlTemplate.replace(
+        )} Ξ by ${updatedEvent.transaction.from}  🔗 ${collection.urlTemplate.replace(
           "{id}",
           updatedEvent.tokenId
         )}`,

@@ -1,10 +1,10 @@
-const { TwitterClient } = require("twitter-api-client");
-const client = new TwitterClient(JSON.parse(process.env.TWITTER_API_KEYS));
+import { TwitterClient } from "twitter-api-client";
+const client = process.env.TWITTER_API_KEYS
+  ? new TwitterClient(JSON.parse(process.env.TWITTER_API_KEYS))
+  : null;
 
-function sendTweet(text) {
+export function sendTweet(text) {
   client.tweets.statusesUpdate({
     status: text,
   });
 }
-
-module.exports = { sendTweet };
